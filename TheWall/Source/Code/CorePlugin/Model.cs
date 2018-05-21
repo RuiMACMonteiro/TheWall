@@ -24,15 +24,17 @@ namespace TheWall
     [RequiredComponent(typeof(RigidBody))]
     [RequiredComponent(typeof(Transform))]
 
-    public class Model
+    public class Model : ILevel
     {
         static Vector2 targetMovement;
         static Vector3 position;
+        static float velocity;
 
         public Model()
         {
             targetMovement = Vector2.Zero;
             position = new Vector3(0,220,0);
+            setVelocity(1);
         }
 
         //Gestor de colisoes
@@ -103,7 +105,8 @@ namespace TheWall
             if (bodyBall != null)
             {
                 targetMovement = -Vector2.UnitY;
-                bodyBall.ApplyLocalForce(targetMovement * 0.07f * bodyBall.Inertia);
+                //bodyBall.ApplyLocalForce(targetMovement * 0.07f * bodyBall.Inertia);
+                bodyBall.ApplyLocalForce(targetMovement * getVelocity() * bodyBall.Inertia);
             }
 
         }
@@ -154,5 +157,47 @@ namespace TheWall
             catch (Exception e) { }
         }
 
+        public float getVelocity()
+        {
+            return velocity;
+        }
+
+        public float High{
+            get
+            {
+                return 0.07f;
+            }
+        }
+
+        public float Normal{
+            get
+            {
+                return 0.05f;
+            }
+        }
+
+        public float Slow{
+            get
+            {
+                return 0.02f;
+            }
+        }
+
+        public void setVelocity(int level)
+        {
+            if(level == 0){
+                velocity = Slow;
+            }else if(level == 1){
+                velocity = Normal;
+            }
+            else if(level == 2){
+                velocity = High;
+            }
+            else
+            {
+                // Default Speed = Normal
+                velocity = Normal;
+            }
+        }
     }
 }
